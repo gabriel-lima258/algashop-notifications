@@ -45,6 +45,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.flywaydb:flyway-database-postgresql'
 	implementation 'org.jsoup:jsoup:1.23.2' // parser html usado na validacao do template
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // render dos templates de e-mail
 
 	runtimeOnly 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'
