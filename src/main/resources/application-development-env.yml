@@ -9,3 +9,11 @@ spring:
     show-sql: true
   flyway:
     locations: classpath:db/migration,classpath:db/testdata
+  mail:
+    host: localhost
+    port: 1025
+
+algashop:
+  notifications:
+    mail:
+      from: no-reply@algashop.local
