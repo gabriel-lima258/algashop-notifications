@@ -5,6 +5,7 @@ import com.algaworks.algashop.notifications.application.email.TemplateRenderExce
 import com.algaworks.algashop.notifications.domain.model.DomainEntityNotFoundException;
 import com.algaworks.algashop.notifications.domain.model.DomainException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.mail.MailException;
@@ -29,6 +30,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(InvalidTemplateHtmlException.class)
 	public ProblemDetail handle(InvalidTemplateHtmlException e) {
 		return problem(HttpStatus.UNPROCESSABLE_CONTENT, "Invalid email template", e.getMessage());
+	}
+
+	// ?sort=campoQueNaoExiste: o Spring Data falha ao montar o ORDER BY. E erro de quem chamou (400), nao do servidor (500).
+	// O detail cita so o nome pedido, sem expor o nome da classe JPA.
+	@ExceptionHandler(PropertyReferenceException.class)
+	public ProblemDetail handle(PropertyReferenceException e) {
+		return problem(HttpStatus.BAD_REQUEST, "Invalid sort", "Invalid sort property: " + e.getPropertyName());
 	}
 
 	@ExceptionHandler(MailException.class)

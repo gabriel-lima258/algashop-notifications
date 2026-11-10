@@ -46,6 +46,7 @@ dependencies {
 	implementation 'org.flywaydb:flyway-database-postgresql'
 	implementation 'org.jsoup:jsoup:1.23.2' // parser html usado na validacao do template
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // render dos templates de e-mail
+	implementation 'com.fasterxml.uuid:java-uuid-generator:5.2.0' // UUIDv7 usado para os ids dos templates
 
 	runtimeOnly 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'
