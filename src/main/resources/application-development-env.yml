@@ -31,6 +31,16 @@ spring:
           # o servico baixa as chaves publicas daqui e confere assinatura, emissor (iss) e expiracao do token
           issuer-uri: ${algashop.integrations.authorization-server.url}
 
+# registro no Eureka: o nome vem do spring.application.name (notifications -> NOTIFICATIONS no painel)
+# healthcheck.enabled fica de fora de proposito: so tem efeito com o Actuator, que ainda nao existe aqui
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${shared.params.service-registry-url}/eureka # mesmo parametro compartilhado dos outros servicos
+  instance:
+    instanceId: ${random.uuid} # cada instancia ganha um id unico: duas na mesma maquina nao se sobrescrevem
+    prefer-ip-address: true # registra o IP, nao o hostname: o gateway alcanca o endereco mesmo dentro do Docker
+
 algashop:
   notifications:
     mail:

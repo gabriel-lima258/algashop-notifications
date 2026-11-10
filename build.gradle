@@ -51,6 +51,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server' // valida o JWT e exige escopo por endpoint
 	implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}")
 	implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store' // le o endereco do auth server do Parameter Store (LocalStack)
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client' // registra o servico no Eureka com o nome NOTIFICATIONS
 
 	runtimeOnly 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'
@@ -126,5 +127,5 @@ tasks.register('dockerBuild', Exec) {
 	dependsOn('bootJar')
 	workingDir project.rootDir
 	commandLine 'docker', 'buildx', 'build', '--platform', 'linux/arm64/v8,linux/amd64',
-			'--tag', 'algashop/notifications:dev', '.'
+			'--tag', 'gabriel58221/notifications:dev', '.'
 }

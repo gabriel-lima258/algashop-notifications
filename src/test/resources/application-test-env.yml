@@ -13,6 +13,11 @@ spring:
           # nos testes de MVC o JwtDecoder e mock; o endereco so precisa existir
           issuer-uri: http://auth.algashop.local:9000
 
+# teste que sobe contexto nao tenta se registrar no Eureka
+eureka:
+  client:
+    enabled: false
+
 algashop:
   notifications:
     mail:
