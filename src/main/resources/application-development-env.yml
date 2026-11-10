@@ -30,6 +30,38 @@ spring:
         jwt:
           # o servico baixa as chaves publicas daqui e confere assinatura, emissor (iss) e expiracao do token
           issuer-uri: ${algashop.integrations.authorization-server.url}
+  kafka:
+    bootstrap-servers: algashop-kafka-1:9092,algashop-kafka-2:9093,algashop-kafka-3:9094 # os tres brokers do cluster
+    properties:
+      # __TypeId__ logico -> classe local: o produtor nunca precisa conhecer o nome da classe daqui
+      # (o nome Notifications.SendEmailCommand e o do contrato docs/asyncapi/messages.yml)
+      spring.json.type.mapping:
+        Notifications.SendEmailCommand:com.algaworks.algashop.notifications.application.email.command.SendEmailIntegrationCommand
+    admin:
+      fail-fast: true # broker fora do ar = o servico nem sobe
+      auto-create: true # cria os NewTopic declarados no KafkaConfig
+      modify-topic-configs: false # nao mexe em configuracao de topico que ja existe
+    producer: # o notifications so produz para a DLT
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer # chave String
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer # valor Json
+      properties:
+        enable.idempotence: true
+        request.timeout.ms: 5000 # tempo de UMA ida ao broker esperando a resposta
+        delivery.timeout.ms: 30000 # teto da operacao inteira: envio + retries + backoff + confirmacao
+        max.block.ms: 5000 # tempo que o proprio send() pode bloquear antes de existir future
+    consumer:
+      auto-offset-reset: earliest # grupo sem offset comeca do inicio: comando publicado antes da 1a atribuicao nao se perde
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # ErrorHandlingDeserializer: JSON ilegivel vira DeserializationException (vai a DLT), em vez de travar o consumo
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+        spring.json.trusted.packages: com.algaworks.algashop.* # so desserializa classes do projeto
+        spring.json.key.default.type: java.lang.String
+        spring.json.value.default.type: java.lang.String
+        # quem le o __TypeId__ e escolhe a classe (sem header ou tipo desconhecido -> ObjectNode -> handler default)
+        spring.json.value.type.method: com.algaworks.algashop.notifications.infrastructure.kafka.KafkaConsumerTypeIdIdentifier.readType
 
 # registro no Eureka: o nome vem do spring.application.name (notifications -> NOTIFICATIONS no painel)
 # healthcheck.enabled fica de fora de proposito: so tem efeito com o Actuator, que ainda nao existe aqui
@@ -48,3 +80,7 @@ algashop:
   integrations:
     # fonte unica do endereco do auth server, igual aos outros servicos
     authorization-server.url: ${shared.params.auth-server-url}
+  messaging:
+    kafka:
+      email-commands-topic-name: notifications.email.commands
+      email-consumer-group: notifications.email-commands

@@ -52,6 +52,7 @@ dependencies {
 	implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}")
 	implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store' // le o endereco do auth server do Parameter Store (LocalStack)
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client' // registra o servico no Eureka com o nome NOTIFICATIONS
+	implementation 'org.springframework.boot:spring-boot-starter-kafka' // consome notifications.email.commands e publica na DLT
 
 	runtimeOnly 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'

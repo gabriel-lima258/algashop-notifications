@@ -1,4 +1,9 @@
 spring:
+  kafka:
+    properties:
+      # mesmo alias do development-env: teste e dev resolvem o __TypeId__ igual
+      spring.json.type.mapping:
+        Notifications.SendEmailCommand:com.algaworks.algashop.notifications.application.email.command.SendEmailIntegrationCommand
   datasource:
     url: jdbc:postgresql://localhost:5433/notifications_test
     username: postgres
