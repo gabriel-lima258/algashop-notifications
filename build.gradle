@@ -29,6 +29,7 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2025.1.0")
+	set('springCloudAwsVersion', "4.0.0")
 }
 
 dependencyManagement {
@@ -47,6 +48,9 @@ dependencies {
 	implementation 'org.jsoup:jsoup:1.23.2' // parser html usado na validacao do template
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // render dos templates de e-mail
 	implementation 'com.fasterxml.uuid:java-uuid-generator:5.2.0' // UUIDv7 usado para os ids dos templates
+	implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server' // valida o JWT e exige escopo por endpoint
+	implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}")
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store' // le o endereco do auth server do Parameter Store (LocalStack)
 
 	runtimeOnly 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'
@@ -57,6 +61,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-flyway-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-mail-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server-test' // jwt() nos testes de MVC
 
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testCompileOnly 'org.projectlombok:lombok'

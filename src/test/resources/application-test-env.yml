@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/notifications_test
+    username: postgres
+    password: postgres
+  mail:
+    host: localhost
+    port: 1025
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # nos testes de MVC o JwtDecoder e mock; o endereco so precisa existir
+          issuer-uri: http://auth.algashop.local:9000
+
+algashop:
+  notifications:
+    mail:
+      from: no-reply@algashop.local

@@ -1,0 +1,8 @@
+# nos testes vale o perfil "test" (base + test-env), nunca o development: assim nenhum teste depende do LocalStack
+spring:
+  profiles:
+    active: test
+    group:
+      test:
+        - base
+        - test-env

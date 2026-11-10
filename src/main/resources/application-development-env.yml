@@ -1,6 +1,18 @@
 server.port: 8084
 
 spring:
+  # so o parametro compartilhado: o endereco do auth server e o mesmo para todos os servicos
+  config:
+    import:
+      - aws-parameterstore:/config/algashop/shared?prefix=shared.params
+  cloud:
+    aws:
+      region:
+        static: us-east-1
+      endpoint: http://algashop-localstack:4566
+      credentials:
+        access-key: LSIAQAAAAAAVNCBMPNSG
+        secret-key: test
   datasource:
     url: jdbc:postgresql://localhost:5433/notifications
     username: postgres
@@ -12,8 +24,17 @@ spring:
   mail:
     host: localhost
     port: 1025
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # o servico baixa as chaves publicas daqui e confere assinatura, emissor (iss) e expiracao do token
+          issuer-uri: ${algashop.integrations.authorization-server.url}
 
 algashop:
   notifications:
     mail:
       from: no-reply@algashop.local
+  integrations:
+    # fonte unica do endereco do auth server, igual aos outros servicos
+    authorization-server.url: ${shared.params.auth-server-url}
